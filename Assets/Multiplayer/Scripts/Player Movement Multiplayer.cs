@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementMultiplayer : NetworkBehaviour
 {
     private float horizontal;
     private float speed = 8f;
@@ -20,6 +21,17 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 wallJumpingPower = new Vector2(1f, 1f);
 
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private AudioListener listener;
+    [SerializeField] private Camera cam;
+    
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            listener.enabled = true;
+            cam.gameObject.SetActive(true);
+        }
+    }
 
     private void Update()
     {
@@ -45,14 +57,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
-     {
+    {
         var groundLayer = LayerMask.NameToLayer("Ground Layer");
         var wallLayer = LayerMask.NameToLayer("Wall Layer");
         if (collision.gameObject.layer == groundLayer)
         {
             isTouchingWall = true;
         }
-        if(collision.gameObject.layer == wallLayer)
+        if (collision.gameObject.layer == wallLayer)
         {
             isTouchingGround = true;
         }
