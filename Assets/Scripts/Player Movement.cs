@@ -9,19 +9,17 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
+    private bool isTouchingWall;
+    private bool isTouchingGround;
 
     private bool isWallJumping;
     private float wallJumpingDirection;
-    private float wallJumpingTime = 0.2f;
+    private float wallJumpingTime = 0.1f;
     private float wallJumpingCounter;
-    private float wallJumpingDuration = 0.4f;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private float wallJumpingDuration = 0.2f;
+    private Vector2 wallJumpingPower = new Vector2(1f, 1f);
 
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask wallLayer;
 
     private void Update()
     {
@@ -46,6 +44,33 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+     {
+        var groundLayer = LayerMask.NameToLayer("Ground Layer");
+        var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        if (collision.gameObject.layer == groundLayer)
+        {
+            isTouchingWall = true;
+        }
+        if(collision.gameObject.layer == wallLayer)
+        {
+            isTouchingGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        var groundLayer = LayerMask.NameToLayer("Ground Layer");
+        var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        {
+            isTouchingWall = false;
+        }
+        if (collision.gameObject.layer == wallLayer)
+        {
+            isTouchingGround = false;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (!isWallJumping)
@@ -56,12 +81,12 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        return isTouchingGround || rb.velocity.y == 0;
     }
 
     private bool IsWalled()
     {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        return isTouchingWall;
     }
 
     private void WallSlide()
