@@ -4,7 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;
     private float speed = 8f;
-    private float jumpingPower = 16f;
+    private float jumpingPower = 8f;
     private bool isFacingRight = true;
 
     private bool isWallSliding;
@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpingTime = 0.1f;
     private float wallJumpingCounter;
     private float wallJumpingDuration = 0.2f;
-    private Vector2 wallJumpingPower = new Vector2(1f, 1f);
+    private Vector2 wallJumpingPower = new Vector2(8f, 8f);
 
     [SerializeField] private Rigidbody2D rb;
 
@@ -28,11 +28,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-        }
-
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
 
         WallSlide();
@@ -48,11 +43,11 @@ public class PlayerMovement : MonoBehaviour
      {
         var groundLayer = LayerMask.NameToLayer("Ground Layer");
         var wallLayer = LayerMask.NameToLayer("Wall Layer");
-        if (collision.gameObject.layer == groundLayer)
+        if (collision.gameObject.layer == wallLayer)
         {
             isTouchingWall = true;
         }
-        if(collision.gameObject.layer == wallLayer)
+        if (collision.gameObject.layer == groundLayer)
         {
             isTouchingGround = true;
         }
@@ -62,10 +57,11 @@ public class PlayerMovement : MonoBehaviour
     {
         var groundLayer = LayerMask.NameToLayer("Ground Layer");
         var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        if(collision.gameObject.layer == wallLayer)
         {
             isTouchingWall = false;
         }
-        if (collision.gameObject.layer == wallLayer)
+        if (collision.gameObject.layer == groundLayer)
         {
             isTouchingGround = false;
         }
@@ -81,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return isTouchingGround || rb.velocity.y == 0;
+        return isTouchingGround;
     }
 
     private bool IsWalled()
@@ -127,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
         {
             wallJumpCooldownTimer = 0f;
 
-            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f && isTouchingWall)
             {
                 isWallJumping = true;
 
