@@ -10,35 +10,23 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
+    private bool isTouchingWall;
+    private bool isTouchingGround;
 
     private bool isWallJumping;
     private float wallJumpingDirection;
-    private float wallJumpingTime = 0.2f;
+    private float wallJumpingTime = 0.1f;
     private float wallJumpingCounter;
-    private float wallJumpingDuration = 0.4f;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private float wallJumpingDuration = 0.2f;
+    private Vector2 wallJumpingPower = new Vector2(1f, 1f);
 
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
-    [SerializeField] AudioListener listener;
 
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner)
-        {
-            listener.enabled = true;
-        }
-        else
-        {
-
-        }
-    }
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
         }
@@ -57,6 +45,33 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+     {
+        var groundLayer = LayerMask.NameToLayer("Ground Layer");
+        var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        if (collision.gameObject.layer == groundLayer)
+        {
+            isTouchingWall = true;
+        }
+        if(collision.gameObject.layer == wallLayer)
+        {
+            isTouchingGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        var groundLayer = LayerMask.NameToLayer("Ground Layer");
+        var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        {
+            isTouchingWall = false;
+        }
+        if (collision.gameObject.layer == wallLayer)
+        {
+            isTouchingGround = false;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (!isWallJumping)
@@ -65,19 +80,19 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    private void IsGrounded()
+    private bool IsGrounded()
     {
-        // nimic
+        return isTouchingGround || rb.velocity.y == 0;
     }
 
-    private void IsWalled()
+    private bool IsWalled()
     {
-        // nimic
+        return isTouchingWall;
     }
 
     private void WallSlide()
     {
-        if (horizontal != 0f)
+        if (IsWalled() && !IsGrounded() && horizontal != 0f)
         {
             isWallSliding = true;
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
