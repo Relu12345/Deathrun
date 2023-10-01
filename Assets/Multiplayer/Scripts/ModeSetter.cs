@@ -16,7 +16,9 @@ public class ModeSetter : MonoBehaviour
 
     public void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
+        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
         NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = inputText.text;
+        NetworkManager.Singleton.StartClient();
+        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
     }
 }
