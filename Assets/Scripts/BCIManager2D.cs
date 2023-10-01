@@ -221,6 +221,7 @@ namespace Gtec.UnityInterface
         private void OnBtnContinue_Click(object sender, EventArgs e)
         {
             ERPBCIManager.Instance.Configure(ERPPipeline.Mode.Application);
+            
             _startFlashing = true;
         }
 
