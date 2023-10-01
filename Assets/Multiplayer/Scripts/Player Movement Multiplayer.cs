@@ -5,7 +5,7 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
 {
     private float horizontal;
     private float speed = 8f;
-    private float jumpingPower = 16f;
+    private float jumpingPower = 8f;
     private bool isFacingRight = true;
 
     private bool isWallSliding;
@@ -18,12 +18,12 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
     private float wallJumpingTime = 0.1f;
     private float wallJumpingCounter;
     private float wallJumpingDuration = 0.2f;
-    private Vector2 wallJumpingPower = new Vector2(1f, 1f);
+    private Vector2 wallJumpingPower = new Vector2(8f, 8f);
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private AudioListener listener;
     [SerializeField] private Camera cam;
-    
+
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -42,11 +42,6 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
         }
 
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-        }
-
         WallSlide();
         WallJump();
 
@@ -60,11 +55,11 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
     {
         var groundLayer = LayerMask.NameToLayer("Ground Layer");
         var wallLayer = LayerMask.NameToLayer("Wall Layer");
-        if (collision.gameObject.layer == groundLayer)
+        if (collision.gameObject.layer == wallLayer)
         {
             isTouchingWall = true;
         }
-        if (collision.gameObject.layer == wallLayer)
+        if (collision.gameObject.layer == groundLayer)
         {
             isTouchingGround = true;
         }
@@ -74,10 +69,11 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
     {
         var groundLayer = LayerMask.NameToLayer("Ground Layer");
         var wallLayer = LayerMask.NameToLayer("Wall Layer");
+        if (collision.gameObject.layer == wallLayer)
         {
             isTouchingWall = false;
         }
-        if (collision.gameObject.layer == wallLayer)
+        if (collision.gameObject.layer == groundLayer)
         {
             isTouchingGround = false;
         }
@@ -93,7 +89,7 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
 
     private bool IsGrounded()
     {
-        return isTouchingGround || rb.velocity.y == 0;
+        return isTouchingGround;
     }
 
     private bool IsWalled()
@@ -139,7 +135,7 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
         {
             wallJumpCooldownTimer = 0f;
 
-            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f && isTouchingWall)
             {
                 isWallJumping = true;
 
@@ -153,9 +149,6 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
             }
         }
     }
-
-
-
 
     private void StopWallJumping()
     {
