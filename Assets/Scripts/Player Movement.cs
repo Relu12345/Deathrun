@@ -1,95 +1,138 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float movementSpeed = 20f;
-    public float jumpSpeed = 500f;
+    private float horizontal;
+    private float speed = 8f;
+    private float jumpingPower = 16f;
+    private bool isFacingRight = true;
 
-    private float dirX;
-    private bool isGrounded = true;
-    private bool facingRight = true;
-    private Rigidbody2D rb;
-    private SpriteRenderer spr;
-    private Animator anim;
-    private Vector3 localScale;
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
 
-    private void Start()
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    private float wallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
+
+    private void Update()
     {
-        rb = GetComponent<Rigidbody2D>();
-        spr = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>();
+        horizontal = Input.GetAxisRaw("Horizontal");
 
-        localScale = transform.localScale;
-    }
-
-    void CheckDirection()
-    {
-        if (dirX > 0)
-            facingRight = true;
-        else if (dirX < 0)
-            facingRight = false;
-
-        if((facingRight && (localScale.x < 0)) || (facingRight && (localScale.x < 0)))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            localScale.x *= -1f;
+            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        }
 
-            transform.localScale = localScale;
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+        }
+
+        WallSlide();
+        WallJump();
+
+        if (!isWallJumping)
+        {
+            Flip();
         }
     }
 
-    void LateUpdate()
+    private void FixedUpdate()
     {
-        CheckDirection();
-    }
-
-    void FixedUpdate()
-    {
-        rb.velocity = new Vector2(dirX, rb.velocity.y);
-    }
-
-    void Update()
-    {
-        if (facingRight == false)
+        if (!isWallJumping)
         {
-            spr.flipX = true;
+            rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+        }
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    private bool IsWalled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void WallSlide()
+    {
+        if (IsWalled() && !IsGrounded() && horizontal != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
-            spr.flipX = false;
+            isWallSliding = false;
+        }
+    }
+
+    private float wallJumpCooldown = 0.5f;
+    private float wallJumpCooldownTimer = 0f;
+
+    private void WallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
         }
 
-        dirX = Input.GetAxisRaw("Horizontal") * movementSpeed;
-
-        if (dirX == 0)
+        if (wallJumpCooldownTimer > 0f)
         {
-            anim.SetBool("isWalking", false);
+            wallJumpCooldownTimer -= Time.deltaTime;
         }
+        else
+        {
+            wallJumpCooldownTimer = 0f;
 
-        if (Mathf.Abs(dirX) == movementSpeed && rb.velocity.y == 0)
-        {
-            anim.SetBool("isWalking", true);
-        }    
-
-        if (isGrounded)
-        {
-            rb.gravityScale = 2.1f;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (isGrounded)
+            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
             {
-                anim.Play("RojickoJump");
-                rb.AddForce(Vector3.up * jumpSpeed);
-                isGrounded = false;
+                isWallJumping = true;
+
+                rb.velocity = new Vector2(rb.velocity.x, wallJumpingPower.y);
+
+                wallJumpingCounter = 0f;
+
+                wallJumpCooldownTimer = wallJumpCooldown;
+
+                Invoke(nameof(StopWallJumping), wallJumpingDuration);
             }
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+
+
+    private void StopWallJumping()
     {
-        isGrounded = true;
+        isWallJumping = false;
+    }
+
+    private void Flip()
+    {
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
     }
 }
