@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -19,6 +20,12 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpingDuration = 0.2f;
     private Vector2 wallJumpingPower = new Vector2(8f, 8f);
 
+    private bool canDash = true;
+    private bool isDashing;
+    private float dashingPower = 16f;
+    private float dashingTime = 0.2f;
+    private float dashingCooldown = 1f;
+
     [SerializeField] private Rigidbody2D rb;
 
     private void Update()
@@ -27,7 +34,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && canDash)
+        {
+            StartCoroutine(Dash());
         }
 
         WallSlide();
@@ -69,10 +81,31 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         if (!isWallJumping)
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
         }
+    }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        if(Input.GetKey(KeyCode.A)) rb.velocity = new Vector2(-1 * dashingPower, 0f);
+        else rb.velocity = new Vector2(1 * dashingPower, 0f);
+        rb.transform.localScale = new Vector3(rb.transform.localScale.x, 0.5f, 1f);
+        rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y - 0.5f, 0f);
+        yield return new WaitForSeconds(dashingTime);
+        isDashing = false;
+        rb.transform.localScale = new Vector3(rb.transform.localScale.x, 1f, 1f);
+        rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y + 0.5f, 0f);
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
     }
 
     private bool IsGrounded()

@@ -11,17 +11,13 @@ public class Mainmenuscript : MonoBehaviour
         
     }
 
-   public void PlayGame()
-    {
-        SceneManager.LoadScene("Game");
-    }
     public void Exit()
     {
         Application.Quit();
     }
     public void Lobby()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("Multiplayer_Game");
     }
     public void Back()
     {
