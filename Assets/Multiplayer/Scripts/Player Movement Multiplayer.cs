@@ -1,6 +1,6 @@
-using UnityEngine;
-using Unity.Netcode;
 using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
 
 public class PlayerMovementMultiplayer : NetworkBehaviour
 {
@@ -39,11 +39,12 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
         }
     }
 
+
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetKeyDown(KeyCode.W) && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
         }
@@ -167,7 +168,7 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
         {
             wallJumpCooldownTimer = 0f;
 
-            if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f && isTouchingWall)
+            if (Input.GetKeyDown(KeyCode.W) && wallJumpingCounter > 0f && isTouchingWall)
             {
                 isWallJumping = true;
 
@@ -181,6 +182,9 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
             }
         }
     }
+
+
+
 
     private void StopWallJumping()
     {
