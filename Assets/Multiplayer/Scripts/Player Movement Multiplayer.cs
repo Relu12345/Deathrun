@@ -39,7 +39,6 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
         }
     }
 
-
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -182,9 +181,6 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
             }
         }
     }
-
-
-
 
     private void StopWallJumping()
     {
