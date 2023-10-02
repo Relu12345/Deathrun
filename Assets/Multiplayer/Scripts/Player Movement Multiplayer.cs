@@ -30,18 +30,28 @@ public class PlayerMovementMultiplayer : NetworkBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private AudioListener listener;
     [SerializeField] private Camera cam;
+    [SerializeField] private Animator anim;
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
             listener.enabled = true;
             cam.gameObject.SetActive(true);
+            transform.position = new Vector3(-110, -40, -1);
         }
     }
 
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
+        if (horizontal != 0f)
+        {
+            anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
 
         if (Input.GetKeyDown(KeyCode.W) && IsGrounded())
         {
