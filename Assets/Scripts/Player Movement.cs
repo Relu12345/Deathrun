@@ -27,10 +27,19 @@ public class PlayerMovement : MonoBehaviour
     private float dashingCooldown = 1f;
 
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] Animator anim;
 
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
+        if (horizontal != 0f)
+        {
+            anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
 
         if (Input.GetKeyDown(KeyCode.W) && IsGrounded())
         {

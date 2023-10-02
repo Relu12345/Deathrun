@@ -68,7 +68,7 @@ Camera:
   far clip plane: 1000
   field of view: 0.5653921
   orthographic: 1
-  orthographic size: 5.3
+  orthographic size: 7
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -109,6 +109,8 @@ GameObject:
   - component: {fileID: 5423258559704881020}
   - component: {fileID: 8855590291851788478}
   - component: {fileID: 7985277118500275941}
+  - component: {fileID: 8301774520954099982}
+  - component: {fileID: 3515023095908213618}
   m_Layer: 0
   m_Name: flatboy
   m_TagString: Untagged
@@ -125,8 +127,8 @@ Transform:
   m_GameObject: {fileID: 5079702952055285485}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7847221870339358394}
@@ -172,7 +174,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: -1493405795, guid: 576b651ab9a23c74184399a686c3abfe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -217,7 +219,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 13.668859
+  m_Mass: 3.4172146
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -354,3 +356,32 @@ MonoBehaviour:
   rb: {fileID: 7035929649891055309}
   listener: {fileID: 872523286873790809}
   cam: {fileID: 5942779389460812876}
+  anim: {fileID: 4953367559560206501}
+--- !u!114 &8301774520954099982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5079702952055285485}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a6061e468f7ef4a95932b04e8d6a92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 7035929649891055309}
+  anim: {fileID: 4953367559560206501}
+--- !u!114 &3515023095908213618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5079702952055285485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 4953367559560206501}
