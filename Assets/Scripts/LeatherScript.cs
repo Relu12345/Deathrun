@@ -8,8 +8,13 @@ public class LeatherScript : MonoBehaviour
     private float speed = 8f;
     private bool isLadder;
     private bool isClimbing;
+    private float initialGravityScale;
 
     [SerializeField] private Rigidbody2D rb;
+
+    void Start() {
+        initialGravityScale = rb.gravityScale;
+    }
 
     void Update()
     {
@@ -30,7 +35,7 @@ public class LeatherScript : MonoBehaviour
         }
         else
         {
-            rb.gravityScale = 4f;
+            rb.gravityScale = initialGravityScale;
         }
     }
 

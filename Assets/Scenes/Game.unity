@@ -214,7 +214,7 @@ Transform:
   m_GameObject: {fileID: 8105356}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -566,7 +566,7 @@ Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 8102722935324713871, guid: cc572f1d15ff094428875532fab360f1, type: 3}
   m_PrefabInstance: {fileID: 1517373715}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &324106709
+--- !u!114 &324106715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2930,7 +2930,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 284389351502510126, guid: cc572f1d15ff094428875532fab360f1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 324106709}
+      addedObject: {fileID: 324106715}
   m_SourcePrefab: {fileID: 100100000, guid: cc572f1d15ff094428875532fab360f1, type: 3}
 --- !u!1 &1617915334
 GameObject:
