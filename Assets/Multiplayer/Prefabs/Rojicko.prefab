@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8963176110605083361}
   - component: {fileID: 2450526475144048924}
   - component: {fileID: 426895511543741472}
+  - component: {fileID: 371709986007401146}
   m_Layer: 7
   m_Name: Rojicko
   m_TagString: Untagged
@@ -262,6 +263,19 @@ MonoBehaviour:
   rb: {fileID: 8102722935324713871}
   listener: {fileID: 6400371247586824237}
   cam: {fileID: 5080116880731847847}
+--- !u!114 &371709986007401146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284389351502510126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8bfcc82758516c469d04cb7105c83f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 8102722935324713871}
 --- !u!1 &6231115435141701780
 GameObject:
   m_ObjectHideFlags: 0
